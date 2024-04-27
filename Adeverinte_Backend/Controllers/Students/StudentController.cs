@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adeverinte_Backend.Controllers.Students;
 
+[Route("Students")]
+[ApiController]
 public class StudentController : ControllerBase
 {
     private readonly AppDbContext _dbContext;

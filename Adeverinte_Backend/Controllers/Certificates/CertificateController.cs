@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adeverinte_Backend.Controllers.Certificates;
 
+[Route("Certificates")]
+[ApiController]
 public class CertificateController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
