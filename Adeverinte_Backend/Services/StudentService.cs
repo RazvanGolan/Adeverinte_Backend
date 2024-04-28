@@ -15,12 +15,22 @@ public class StudentService : IStudentServices
     
     public async Task<StudentModel> FindById(string id)
     {
-        return await _appDbContext.Students.FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _appDbContext.Students
+            .Include(s=>s.Speciality)
+            .Include(s=>s.Faculty)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (student is null)
+            throw new Exception($"The student with id {id} does not exist.");
+
+        return student;
     }
 
     public async Task<List<StudentModel>> GetAll()
     {
         return await _appDbContext.Students
+            .Include(s=>s.Speciality)
+            .Include(s=>s.Faculty)
             .ToListAsync();
     }
 
@@ -31,7 +41,17 @@ public class StudentService : IStudentServices
 
     public async Task<StudentModel> CreateStudent(StudentRequest request)
     {
-        var student = new StudentModel(request.FirstName, request.LastName, request.Faculty, request.Speciality, request.Email,
+        var faculty = await _appDbContext.Faculties
+            .FirstOrDefaultAsync(f => f.Id == request.FacultyId);
+        var speciality = await _appDbContext.Specialities
+            .FirstOrDefaultAsync(s => s.Id == request.SpecialityId);
+
+        if (faculty is null)
+            throw new Exception($"Faculty with id {request.FacultyId} does not exist");
+        if (speciality is null)
+            throw new Exception($"Speciality with id {request.SpecialityId} does not exist");
+        
+        var student = new StudentModel(request.FirstName, request.LastName, faculty, speciality, request.Email,
             request.Role, request.Year, request.Marca);
 
         _appDbContext.Students.Add(student);

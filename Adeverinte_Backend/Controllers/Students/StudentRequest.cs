@@ -6,8 +6,8 @@ public class StudentRequest
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Faculty { get; set; }
-    public string Speciality { get; set; }
+    public string FacultyId { get; set; }
+    public string SpecialityId { get; set; }
     public string Email { get; set; }
     public int Year { get; set; }
     public string Marca { get; set; }
