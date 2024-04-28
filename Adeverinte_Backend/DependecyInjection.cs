@@ -1,3 +1,4 @@
+using Adeverinte_Backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adeverinte_Backend;
@@ -10,6 +11,8 @@ public static class DependecyInjection
         {
             options.UseNpgsql(configuration.GetConnectionString("ConnectionString"));
         });
+
+        services.AddScoped<IStudentServices, StudentService>();
         
         return services;
     }
