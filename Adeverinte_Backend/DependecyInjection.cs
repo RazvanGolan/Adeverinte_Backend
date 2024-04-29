@@ -12,7 +12,8 @@ public static class DependecyInjection
             options.UseNpgsql(configuration.GetConnectionString("ConnectionString"));
         });
 
-        services.AddScoped<IStudentServices, StudentService>();
+        services.AddScoped<IStudentService, StudentService>();
+        services.AddScoped<ICertificateService, CertificateService>();
         
         return services;
     }

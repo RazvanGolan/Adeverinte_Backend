@@ -10,18 +10,18 @@ namespace Adeverinte_Backend.Controllers.Students;
 public class StudentController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
-    private readonly IStudentServices _studentServices;
+    private readonly IStudentService _studentService;
     
-    public StudentController(AppDbContext dbContext, IStudentServices studentServices)
+    public StudentController(AppDbContext dbContext, IStudentService studentService)
     {
         _dbContext = dbContext;
-        _studentServices = studentServices;
+        _studentService = studentService;
     }
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StudentResponse>>> GetStudents()
     {
-        var students = await _studentServices.GetAll();
+        var students = await _studentService.GetAll();
 
         return Ok(students.Select(Map));
     }
@@ -31,7 +31,7 @@ public class StudentController : ControllerBase
     {
         try
         {
-            var student = await _studentServices.FindById(id);
+            var student = await _studentService.FindById(id);
             return Ok(Map(student));
         }
         catch (Exception e)
@@ -84,9 +84,9 @@ public class StudentController : ControllerBase
     {
         try
         {
-            var student = await _studentServices.CreateStudent(request);
+            var student = await _studentService.CreateStudent(request);
         
-            await _studentServices.Save();
+            await _studentService.Save();
 
             return Ok(Map(student));
         }
@@ -97,13 +97,13 @@ public class StudentController : ControllerBase
     }
     
     [HttpDelete("id")]
-    public async Task<ActionResult<StudentResponse>> DeleteStudent(string id)
+    public async Task<ActionResult> DeleteStudent(string id)
     {
         try
         {
-            var student = await _studentServices.FindById(id);
+            var student = await _studentService.FindById(id);
             _dbContext.Remove(student);
-            await _studentServices.Save();
+            await _studentService.Save();
             
             return Ok($"The student with id {id} was removed");
         }

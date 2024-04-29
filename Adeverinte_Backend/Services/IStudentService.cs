@@ -3,7 +3,7 @@ using Adeverinte_Backend.Entities.Students;
 
 namespace Adeverinte_Backend.Services;
 
-public interface IStudentServices
+public interface IStudentService
 {
     public Task<StudentModel> FindById(string id);
     public Task<List<StudentModel>> GetAll();

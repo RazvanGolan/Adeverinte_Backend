@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adeverinte_Backend.Services;
 
-public class StudentService : IStudentServices
+public class StudentService : IStudentService
 {
     protected readonly AppDbContext _appDbContext;
     
