@@ -42,6 +42,30 @@ public class CertificateController : ControllerBase
             return NotFound(e.Message);
         }
     }
+
+    [HttpGet("{email}")]
+    public async Task<ActionResult<List<CertificateResponse>>> GetByStudentEmail(string email)
+    {
+        try
+        {
+            var certificates = await _certificateService.GetCertificateByStudentEmailAsync(email);
+            return Ok(certificates.Select(Map));
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpGet("SortByAll")]
+    public async Task<ActionResult<List<CertificateResponse>>> GetByBig([FromQuery]CertificateParameters certificateParameters,
+        bool? today, bool? week, bool? month, string? facultyId, string? specialityId, int? year, TypeEnum? type, StateEnum? state)
+    {
+        var certificates = await _certificateService.GetCertificateBigFilter(certificateParameters, today, week, month,
+            facultyId, specialityId, year, type, state);
+        
+        return Ok(certificates.Select(MapWithSpecialityAndFaculty));
+    }
     
     [HttpPost]
     public async Task<ActionResult<CertificateResponse>> CreateCertificate(

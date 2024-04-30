@@ -42,6 +42,72 @@ public class CertificateService : ICertificateService
         return certificate;
     }
 
+    public async Task<List<CertificateModel>> GetCertificateByStudentEmailAsync(string email)
+    {
+        var certificates = await _appDbContext.Certificates
+            .Include(c => c.Student)
+            .Include(c => c.Pdf)
+            .Where(c => c.Student.Email == email)
+            .ToListAsync();
+        
+        return certificates;
+    }
+
+    public async Task<List<CertificateModel>> GetCertificateBigFilter(CertificateParameters certificateParameters, bool? today, 
+        bool? week, bool? month, string? faculty, string? speciality, int? year, TypeEnum? type, StateEnum? state)
+    {
+        IQueryable<CertificateModel> queryable = _appDbContext.Certificates.Include(c => c.Student)
+            .Include(c => c.Student.Faculty)
+            .Include(c => c.Student.Speciality);
+
+        if (!string.IsNullOrWhiteSpace(faculty))
+        {
+            queryable = queryable.Where(c => c.Student.Faculty.Id == faculty);
+        }
+
+        if (!string.IsNullOrWhiteSpace(speciality))
+        {
+            queryable = queryable.Where(c => c.Student.Speciality.Id == speciality);
+        }
+
+        if (year is not null)
+        {
+            queryable = queryable.Where(c => c.Student.Year == year);
+        }
+
+        if (today is not null && today == true)
+        {
+            queryable = queryable.Where(c => c.Created.Date == DateTime.UtcNow.Date);
+        }
+        else if(week is not null && week == true)
+        {
+            DateTime startWeek = DateTime.UtcNow.AddDays(-(int)DateTime.Today.DayOfWeek);
+            DateTime endWeek = DateTime.UtcNow.AddDays(7).AddSeconds(-1);
+            queryable = queryable.Where(c => c.Created.Date >= startWeek && c.Created.Date <= endWeek);
+        }
+        else if(month is not null && month == true)
+        {
+            DateTime currentMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+            queryable = queryable.Where(c => c.Created.Date.Month == currentMonth.Month);
+        }
+
+        if (type is not null)
+        {
+            queryable = queryable.Where(c => c.Type == type);
+        }
+
+        if (state is not null)
+        {
+            queryable = queryable.Where(c => c.State == state);
+        }
+
+        queryable = queryable.OrderBy(c => c.Created)
+             .Skip((certificateParameters.PageNumber - 1) * certificateParameters.PageSize)
+             .Take(certificateParameters.PageSize);
+        
+        return await queryable.ToListAsync();
+    }
+
     public async Task<CertificateModel> CreateCertificateAsync(CertificateRequest request)
     {
         StudentModel student;
