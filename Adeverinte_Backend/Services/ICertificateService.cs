@@ -12,12 +12,15 @@ public interface ICertificateService
     public Task<List<CertificateModel>> GetCertificateBigFilter(CertificateParameters certificateParameters, bool? today, bool? week,
         bool? month, string? faculty, string? speciality, int? year, TypeEnum? type, StateEnum? state);
     Task<CertificateModel> CreateCertificateAsync(CertificateRequest certificate);
+    Task<CertificateModel> CreatePdfAsync(string certificateId);
     Task DeleteCertificateAsync(string id);
     Task<int> GetCountForTodayAsync();
     Task<CertificateModel> UpdateToApproved(string id);
     Task<CertificateModel> UpdateToRejected(string id, string RejectedMessage);
     Task<CertificateModel> UpdateToSigned(string id);
     Task<CertificateModel> UpdateToWaiting(string id);
+    Task<CertificateModel> UploadSignedPdfAsync(string id, IFormFile? file);
+    Task<byte[]> DownloadPdf(string id);
 
 
 

@@ -1,4 +1,5 @@
 using Adeverinte_Backend.Controllers.Students;
+using Adeverinte_Backend.Entities;
 using Adeverinte_Backend.Entities.Certificates;
 using Adeverinte_Backend.Entities.Enums;
 using Adeverinte_Backend.Services;
@@ -43,7 +44,7 @@ public class CertificateController : ControllerBase
         }
     }
 
-    [HttpGet("{email}")]
+    [HttpGet("email")]
     public async Task<ActionResult<List<CertificateResponse>>> GetByStudentEmail(string email)
     {
         try
@@ -67,6 +68,20 @@ public class CertificateController : ControllerBase
         return Ok(certificates.Select(MapWithSpecialityAndFaculty));
     }
     
+    [HttpGet("GetPdf/id")]
+    public async Task<ActionResult> GetPdfByIdAsync(string id)
+    {
+        try
+        {
+            var pdfBytes =  await _certificateService.DownloadPdf(id);
+            return Ok(pdfBytes);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpPost]
     public async Task<ActionResult<CertificateResponse>> CreateCertificate(
         [FromBody] CertificateRequest certificateRequest)
@@ -75,6 +90,20 @@ public class CertificateController : ControllerBase
         {
             var certificate = await _certificateService.CreateCertificateAsync(certificateRequest);
             return Ok(MapWithSpecialityAndFaculty(certificate));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("GeneratePdf")]
+    public async Task<ActionResult<CertificateResponse>> CreatePdf(string certificateId)
+    {
+        try
+        {
+            var certificate = await _certificateService.CreatePdfAsync(certificateId);
+            return Ok(Map(certificate));
         }
         catch (Exception e)
         {
@@ -96,7 +125,7 @@ public class CertificateController : ControllerBase
         }
     }
 
-    [HttpPatch("PatchState/{id}")]
+    [HttpPatch("PatchState/id")]
     public async Task<ActionResult<CertificateResponse>> UptdateState(string id,
         [FromBody] StateEnum state, string? rejectMessage)
     {
@@ -147,6 +176,21 @@ public class CertificateController : ControllerBase
                 }
             default:
                 return BadRequest();
+        }
+    }
+    
+    [HttpPatch("UploadSignedPdf/id")]
+    public async Task<ActionResult<CertificateResponse>> UploadPdf(string id, IFormFile? file)
+    {
+        try
+        {
+            var certificate = await _certificateService.UploadSignedPdfAsync(id, file);
+
+            return Ok(Map(certificate));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
         }
     }
     

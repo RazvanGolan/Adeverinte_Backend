@@ -28,7 +28,8 @@ public class CertificateModel : Entity
         bool onEmail
     )
     {
-        var text = type + " " + motive;
+        var text =
+            $"Studena / Studentul {student.LastName} {student.FirstName} de la facultatea {student.Faculty.Name} cu specializarea {student.Speciality.Name} în anul {student.Year} de studii.";
         
         return new CertificateModel
         {
