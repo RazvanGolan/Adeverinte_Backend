@@ -14,6 +14,7 @@ public static class DependecyInjection
 
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<ICertificateService, CertificateService>();
+        services.AddScoped<IPdfService, PdfService>();
         
         return services;
     }

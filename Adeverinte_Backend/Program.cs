@@ -1,5 +1,9 @@
 using Adeverinte_Backend;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using QuestPDF.Previewer;
 
 var builder = WebApplication.CreateBuilder(args);
 
