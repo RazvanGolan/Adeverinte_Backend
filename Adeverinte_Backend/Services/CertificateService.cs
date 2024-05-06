@@ -173,6 +173,7 @@ public class CertificateService : ICertificateService
                             {
                                 stack.Item().Height(0.7f, Unit.Centimetre).Text("");
                                 stack.Item().Image("Images/ACLogo.png");
+                                stack.Item().Height(0.3f, Unit.Centimetre).Text("");
                                 stack.Item()
                                     .Text($"Numar : {certificate.Number}",
                                         TextStyle.Default); //number din database 
@@ -194,7 +195,7 @@ public class CertificateService : ICertificateService
                         stack.Item().Text("Adeverință").FontSize(30).AlignCenter();
                         stack.Spacing(0.5f, Unit.Centimetre);
                         stack.Item().Text($"Tip {certificate.Type}").FontSize(20).AlignCenter();
-                        stack.Item().Height(0.3f, Unit.Centimetre).Text("");
+                        stack.Item().Height(2, Unit.Centimetre).Text("");
                         stack.Item().Text("     " + certificate.Text).FontSize(15).AlignLeft();
                         stack.Item().Text("     " + $"Adeverința se eliberează pentru motivul {certificate.Motive}.").AlignLeft().FontSize(15);
                         stack.Item().Height(12, Unit.Centimetre).Text("");
