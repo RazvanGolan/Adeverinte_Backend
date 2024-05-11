@@ -8,8 +8,16 @@ using QuestPDF.Previewer;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration; // get configuration from appsettings.json
+var services = builder.Services;
 
 builder.Services.AddControllers();
+services.AddCors(options => options.AddPolicy("EnableAll", policy =>
+{
+    policy.AllowAnyOrigin();
+    policy.AllowAnyMethod();
+    policy.AllowAnyHeader();
+}));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddRepositories(configuration);
@@ -24,6 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("EnableAll");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
