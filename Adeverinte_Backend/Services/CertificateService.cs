@@ -70,12 +70,12 @@ public class CertificateService : ICertificateService
 
         if (!string.IsNullOrWhiteSpace(faculty))
         {
-            queryable = queryable.Where(c => c.Student.Faculty.Name == faculty);
+            queryable = queryable.Where(c => c.Student.Faculty.Name.ToUpper() == faculty.ToUpper());
         }
 
         if (!string.IsNullOrWhiteSpace(speciality))
         {
-            queryable = queryable.Where(c => c.Student.Speciality.Name == speciality);
+            queryable = queryable.Where(c => c.Student.Speciality.Name.ToUpper() == speciality.ToUpper());
         }
 
         if (year is not null)

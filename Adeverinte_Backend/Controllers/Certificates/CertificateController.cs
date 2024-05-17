@@ -127,7 +127,7 @@ public class CertificateController : ControllerBase
 
     [HttpPatch("PatchState/id")]
     public async Task<ActionResult<CertificateResponse>> UptdateState(string id,
-        [FromBody] StateEnum state, string? rejectMessage)
+        [FromQuery] StateEnum state, string? rejectMessage)
     {
         switch (state)
         {
