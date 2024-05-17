@@ -60,10 +60,10 @@ public class CertificateController : ControllerBase
 
     [HttpGet("SortByAll")]
     public async Task<ActionResult<List<CertificateResponse>>> GetByBig([FromQuery]CertificateParameters certificateParameters,
-        bool? today, bool? week, bool? month, string? facultyId, string? specialityId, int? year, TypeEnum? type, StateEnum? state)
+        bool? today, bool? week, bool? month, string? facultyName, string? specialityName, int? year, TypeEnum? type, StateEnum? state)
     {
         var certificates = await _certificateService.GetCertificateBigFilter(certificateParameters, today, week, month,
-            facultyId, specialityId, year, type, state);
+            facultyName, specialityName, year, type, state);
         
         return Ok(certificates.Select(MapWithSpecialityAndFaculty));
     }
