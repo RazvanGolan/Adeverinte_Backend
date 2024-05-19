@@ -13,10 +13,12 @@ public interface ICertificateService
         bool? month, string? faculty, string? speciality, int? year, TypeEnum? type, StateEnum? state);
     Task<CertificateModel> CreateCertificateAsync(CertificateRequest certificate);
     Task<CertificateModel> CreatePdfAsync(string certificateId);
+    Task<string> SendEmailAsync(string certificateId);
+    Task<string> SendRejectedEmailAsync(string certificateId);
     Task DeleteCertificateAsync(string id);
     Task<int> GetCountForTodayAsync();
     Task<CertificateModel> UpdateToApproved(string id);
-    Task<CertificateModel> UpdateToRejected(string id, string RejectedMessage);
+    Task<CertificateModel> UpdateToRejected(string id, string rejectedMessage);
     Task<CertificateModel> UpdateToSigned(string id);
     Task<CertificateModel> UpdateToWaiting(string id);
     Task<CertificateModel> UploadSignedPdfAsync(string id, IFormFile? file);

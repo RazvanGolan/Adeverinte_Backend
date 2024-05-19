@@ -97,6 +97,36 @@ public class CertificateController : ControllerBase
         }
     }
     
+    [HttpPost("SentEmail/{id}")]
+    public async Task<ActionResult<CertificateResponse>> SendEmail(string id)
+    {
+        try
+        {
+            var studentEmail = await _certificateService.SendEmailAsync(id);
+
+            return Ok($"The email was successfully sent to the student address {studentEmail}");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("SentRejectedEmail/{id}")]
+    public async Task<ActionResult<CertificateResponse>> SendRejectedEmail(string id)
+    {
+        try
+        {
+            var studentEmail = await _certificateService.SendRejectedEmailAsync(id);
+
+            return Ok($"The email was successfully sent to the student address {studentEmail}");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpPost("GeneratePdf")]
     public async Task<ActionResult<CertificateResponse>> CreatePdf(string certificateId)
     {

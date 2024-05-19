@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Adeverinte_Backend.Controllers.Students;
 using Adeverinte_Backend.Entities.Students;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,19 @@ public class StudentService : IStudentService
         return student;
     }
 
+    public async Task<StudentModel> FindByEmail(string email)
+    {
+        var student = await _appDbContext.Students
+            .Include(s=>s.Speciality)
+            .Include(s=>s.Faculty)
+            .FirstOrDefaultAsync(s => s.Email == email);
+        
+        if(student is null)
+            throw new Exception($"The student with email {email} does not exist.");
+
+        return student;
+    }
+
     public async Task<List<StudentModel>> GetAll()
     {
         return await _appDbContext.Students
@@ -50,6 +64,9 @@ public class StudentService : IStudentService
             throw new Exception($"Faculty with id {request.FacultyId} does not exist");
         if (speciality is null)
             throw new Exception($"Speciality with id {request.SpecialityId} does not exist");
+
+        if (!Regex.IsMatch(request.Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$"))
+            throw new Exception($"The email {request.Email} is not a valid email");
         
         var student = new StudentModel(request.FirstName, request.LastName, faculty, speciality, request.Email,
             request.Role, request.Year, request.Marca);
