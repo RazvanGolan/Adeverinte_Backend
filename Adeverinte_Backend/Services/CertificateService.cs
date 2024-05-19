@@ -3,6 +3,7 @@ using Adeverinte_Backend.Entities;
 using Adeverinte_Backend.Entities.Certificates;
 using Adeverinte_Backend.Entities.Enums;
 using Adeverinte_Backend.Entities.Students;
+using Adeverinte_Backend.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -16,12 +17,14 @@ public class CertificateService : ICertificateService
     private readonly AppDbContext _appDbContext;
     private readonly IStudentService _studentService;
     private readonly IPdfService _pdfService;
+    private readonly IEmailService _emailService;
 
-    public CertificateService(AppDbContext appDbContext, IStudentService studentService, IPdfService pdfService)
+    public CertificateService(AppDbContext appDbContext, IStudentService studentService, IPdfService pdfService, IEmailService emailService)
     {
         _appDbContext = appDbContext;
         _studentService = studentService;
         _pdfService = pdfService;
+        _emailService = emailService;
     }
 
 
@@ -214,6 +217,62 @@ public class CertificateService : ICertificateService
         await _appDbContext.SaveChangesAsync();
         
         return certificate;
+    }
+
+    public async Task<string> SendEmailAsync(string certificateId)
+    {
+        try
+        {
+            var certificate = await GetCertificateByIdAsync(certificateId);
+
+            if (certificate.OnEmail is false)
+                throw new Exception($"Student with id {certificate.Student.Id}, does not want to receive emails.");
+            
+            if (certificate.Pdf is null)
+                throw new Exception($"Certificate with id {certificateId} does not have a generated pdf.");
+
+            if (certificate.State == StateEnum.Rejected || certificate.State == StateEnum.Waiting)
+                throw new Exception(
+                    $"Certificate with id {certificateId} is not in a good state. It's current state is {certificate.State.ToString()}");
+            
+            // FirstNameLastname-AcceptedDate.pdf
+            var pdfName = $"{certificate.Student.FirstName}{certificate.Student.LastName}-{certificate.Accepted.Value:dd/MM/yy}.pdf";
+            var emailTextBody = $"Buna ziua, \n\nPrin prezenta va comunicam ca adeverinta dumneavoastra de tip {certificate.Type.ToString()} pentru motivul {certificate.Motive} a fost eliberata in data de {certificate.Accepted.Value:dd/MM/yy}.\n\nCu stima,\nEchipa de adeverinte";
+            var emailSender = certificate.Student.Email;
+            
+            await _emailService.SendEmailAsync(emailSender, emailTextBody, certificate.Pdf.Data, pdfName);
+
+            return certificate.Student.Email;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
+    public async Task<string> SendRejectedEmailAsync(string certificateId)
+    {
+        try
+        {
+            var certificate = await GetCertificateByIdAsync(certificateId);
+
+            if (certificate.OnEmail is false)
+                throw new Exception($"Student with id {certificate.Student.Id}, does not want to receive emails.");
+
+            if (certificate.State != StateEnum.Rejected)
+                throw new Exception($"Certificate with id {certificateId} is not in the rejected state");
+            
+            var emailTextBody = $"Buna ziua, \n\nPrin prezenta va comunicam ca adeverinta dumneavoastra de tip {certificate.Type.ToString()} pentru motivul {certificate.Motive} a fost respinsa.\n\n{certificate.RejectMsg}\n\nCu stima,\nEchipa de adeverinte";
+            var emailSender = certificate.Student.Email;
+
+            await _emailService.SendEmailRejectedAsync(emailSender, emailTextBody);
+            
+            return certificate.Student.Email;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public async Task<CertificateModel> UploadSignedPdfAsync(string id, IFormFile? file)

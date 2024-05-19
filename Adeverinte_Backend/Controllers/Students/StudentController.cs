@@ -40,6 +40,20 @@ public class StudentController : ControllerBase
         }
     }
     
+    [HttpGet("email")]
+    public async Task<ActionResult<StudentResponse>> GetStudentByEmail(string email)
+    {
+        try
+        {
+            var student = await _studentService.FindByEmail(email);
+            return Ok(Map(student));
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
     [HttpGet("/Faculties")]
     public async Task<ActionResult<IEnumerable<FacultyResponse>>> GetAllFaculties()
     {
