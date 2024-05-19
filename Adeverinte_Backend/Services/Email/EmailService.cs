@@ -57,8 +57,8 @@ public class EmailService : IEmailService
         email.Body = multipart;
         
         using var smtp = new SmtpClient();
-        await smtp.ConnectAsync(_smtpServer, _port, SecureSocketOptions.StartTls);
-        // smtp.AuthenticationMechanisms.Remove("XOAUTH2");
+        await smtp.ConnectAsync(_smtpServer, _port, SecureSocketOptions.SslOnConnect);
+        smtp.AuthenticationMechanisms.Remove("XOAUTH2");
         await smtp.AuthenticateAsync(_username, _password);
         await smtp.SendAsync(email);
         await smtp.DisconnectAsync(true);
@@ -87,7 +87,7 @@ public class EmailService : IEmailService
         email.Body = multipart;
         
         using var smtp = new SmtpClient();
-        await smtp.ConnectAsync(_smtpServer, _port, SecureSocketOptions.StartTls);
+        await smtp.ConnectAsync(_smtpServer, _port, SecureSocketOptions.SslOnConnect);
         smtp.AuthenticationMechanisms.Remove("XOAUTH2");
         await smtp.AuthenticateAsync(_username, _password);
         await smtp.SendAsync(email);

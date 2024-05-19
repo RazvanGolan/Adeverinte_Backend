@@ -262,7 +262,7 @@ public class CertificateService : ICertificateService
             if (certificate.State != StateEnum.Rejected)
                 throw new Exception($"Certificate with id {certificateId} is not in the rejected state");
             
-            var emailTextBody = $"Buna ziua, \n\nPrin prezenta va comunicam ca adeverinta dumneavoastra de tip {certificate.Type.ToString()} pentru motivul {certificate.Motive} a fost respinsa.\n\n{certificate.RejectMsg}\n\nCu stima,\nEchipa de adeverinte";
+            var emailTextBody = $"Buna ziua, \n\nPrin prezenta va comunicam ca adeverinta dumneavoastra de tip {certificate.Type.ToString()} pentru motivul {certificate.Motive} a fost respinsa.\n\nMesajul de respingere: {certificate.RejectMsg}\n\nCu stima,\nEchipa de adeverinte";
             var emailSender = certificate.Student.Email;
 
             await _emailService.SendEmailRejectedAsync(emailSender, emailTextBody);
