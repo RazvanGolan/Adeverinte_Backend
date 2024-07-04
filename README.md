@@ -1,21 +1,33 @@
-# Adeverinte_Backend
+# School Certificate Issuance
 
 ## Overview
 
-This project simplifies the process of issuing school certificates for both students and the secretary. It was made to be integrated with the faculty's website <a href="https://student.upt.ro">student.upt</a>
+This repository contains the backend implementation for a school certificate issuance system. It was made to be integrated with the faculty's website <a href="https://student.upt.ro">student.upt</a>
+
+The frontend of this project can be found <a href="https://github.com/RaulCandrea/AdeverinteFrontendFIS">here</a>
 
 <h2>Student's Dashbord</h2>
   <li><b>Request Certificates:</b> Students can easily request new certificates.</li>
   <li><b>View Completed Certificates:</b> Students can view the status and details of their requested certificates.</li>
 
 <h2>Secretary's Dashbord</h2>
-  <li><b>Sort and Manage Requests:</b>b> Secretaries can sort certificate requests thoroughly.</li>
+  <li><b>Sort and Manage Requests:</b> Secretaries can sort certificate requests thoroughly.</li>
   <li><b>Approve or Reject Requests:</b> Secretaries can approve or reject certificate requests.</li>
   <li><b>Sign Certificates:</b> Approved certificates are signed physically and uploaded to the site.</li> 
   <li><b>Email Notifications:</b> Students receive email notifications for both rejected and approved certificates.</li>
 
 ## Technical details
-- Technology Stack: .NET Core 8, ASP.NET Core 8, Entity Framework Core, PostgreSQL, Swagger UI and Firebase.
+<details>
+<summary>Technology Stack</summary>
+<ul>
+  <li><strong>Backend Framework:</strong> .NET Core 8, ASP.NET Core 8</li>
+  <li><strong>ORM:</strong> Entity Framework Core</li>
+  <li><strong>Database:</strong> PostgreSQL</li>
+  <li><strong>API Documentation:</strong> Swagger UI</li>
+  <li><strong>Authentication & Storage:</strong> Firebase</li>
+</ul>
+</details>
+  
 <details>
 <summary>Libraries Used</summary>
 <ul>
@@ -74,12 +86,12 @@ This project simplifies the process of issuing school certificates for both stud
 
 1. **Clone the repository:**
 ```sh
-git clone https://github.com/your-repo/school-certificate-issuance.git
+git clone https://github.com/RazvanGolan/school-certificate-issuance-backend.git
 ```
 
 2. **Navigate to the project directory:**
 ```sh
-cd school-certificate-issuance
+cd school-certificate-issuance-backend
 ```
 3. **Set up the database:**
 - Ensure PostgreSQL is installed and running.
